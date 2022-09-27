@@ -22,31 +22,6 @@ import {
 } from '@kitware/vtk.js/Rendering/Core/Mapper/Constants';
 // import vtkSphereSource from 'vtk.js/Sources/Filters/Sources/SphereSource';
 export default function App() {
-    const shaderProgram = vtkShaderProgram.newInstance();
-    // ①创建shader==>顺便设置着色器类型
-    const vertexShader = vtkShader.newInstance({
-      shaderType: 'Vertex',
-    });
-    // 设置着色器类型
-    // vertexShader.setShaderType('Vertex'); 
-    console.log('vertexShader', vertexShader.getShaderType());
-    // ②设置源码向shader中导入着色程序
-    vertexShader.setSource('')
-    // 获取源码
-    vertexShader.getSource();
-    console.log('vertexShader.getSource()::', vertexShader.getSource())
-    // 着色器设置上下文
-    // vertexShader.setContext();
-    // ③编译shader
-    // vertexShader.compile();
-    // ④查询shader的状态
-    // ⑤连接shader
-   
-    // const vertexShaderProgram = shaderProgram.attachShader(vertexShader);
-    console.log('vtkShaderProgram方法',shaderProgram);
-    console.log('vtkShade方法',vertexShader);
-    // console.log('vtkShaderProgram', shaderProgram.getVertexShader().getShaderType())
-
     //渲染没有问题
     //Standard rendering code setup
      const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance();
