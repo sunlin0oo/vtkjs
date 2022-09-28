@@ -106,7 +106,7 @@ function vtkShaderProgram(publicAPI, model) {
   };
 
   publicAPI.link = function () {
-    console.log('model of link', model);
+    // console.log('model of link', model);
     if (model.inked) {
       return true;
     }
@@ -119,12 +119,12 @@ function vtkShaderProgram(publicAPI, model) {
     model.uniformLocs = {};
     model.context.linkProgram(model.handle);
     // 此处出错==>Error linking shader The program must contain objects to form both a vertex and fragment shader.
-    console.log('model.handle', model.handle,'model.context.LINK_STATUS',model.context.LINK_STATUS);
+    // console.log('model.handle', model.handle,'model.context.LINK_STATUS',model.context.LINK_STATUS);
     var isCompiled = model.context.getProgramParameter(model.handle, model.context.LINK_STATUS);
 
     if (!isCompiled) {
       var lastError = model.context.getProgramInfoLog(model.handle);
-      vtkErrorMacro("Error linking shader ".concat(lastError));
+      vtkErrorMacro("Error linking shader :::".concat(lastError));
       model.handle = 0;
       return false;
     }
@@ -502,9 +502,9 @@ function vtkShaderProgram(publicAPI, model) {
 
   publicAPI.attachShader = function (shader) {
 
-    console.log('model.vertexShadergetContext::', model.vertexShader.getContext());
-    console.log('model.vertexShadergetSource::', model.vertexShader.getSource());
-    console.log('model.vertexShadergetShaderType()::', model.vertexShader.getShaderType());
+    // console.log('model.vertexShadergetContext::', model.vertexShader.getContext());
+    // console.log('model.vertexShadergetSource::', model.vertexShader.getSource());
+    // console.log('model.vertexShadergetShaderType()::', model.vertexShader.getShaderType());
 
 
     if (shader.getHandle() === 0) {
@@ -599,6 +599,7 @@ function vtkShaderProgram(publicAPI, model) {
     model.vertexShader.setContext(ctx);
     model.fragmentShader.setContext(ctx);
     model.geometryShader.setContext(ctx);
+
   };
 
   publicAPI.setLastCameraMTime = function (mtime) {

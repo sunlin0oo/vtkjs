@@ -22,7 +22,7 @@ function vtkShader(publicAPI, model) {
       model.context.deleteShader(model.handle);
       model.handle = 0;
     }
-    console.log('model of Shader:', model);
+    // console.log('model of Shader:', model);
     switch (model.shaderType) {
       // case vtkShader::Geometry:
       //   type = GL_GEOMETRY_SHADER;
@@ -40,8 +40,8 @@ function vtkShader(publicAPI, model) {
     model.handle = model.context.createShader(stype);
     model.context.shaderSource(model.handle, model.source);
     model.context.compileShader(model.handle);
-    var isCompiled = model.context.getShaderParameter(model.handle, model.context.COMPILE_STATUS);
-    console.log('Shader of model', model,isCompiled);
+    var isCompiled = model.context.getShaderParameter(model.handle, model.context.COMPILE_STATUS);   
+    // console.log('Shader of model', model,isCompiled);
     if (!isCompiled) {
       var lastError = model.context.getShaderInfoLog(model.handle);
       vtkErrorMacro("Error compiling shader '".concat(model.source, "': ").concat(lastError));

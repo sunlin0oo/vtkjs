@@ -52,6 +52,7 @@ export default function App() {
             }
             return shader;
         }
+        
         function createProgram(gl, vshader, fshader) {
             const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vshader)
             const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fshader);
