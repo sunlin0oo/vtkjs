@@ -100,14 +100,14 @@ export default function App() {
       }
       last_vertex_coord += jsondata.face_list[faceIdx].vertex_coord.length/3;
     }
-    // console.log("polydata::",polydata);
+    console.log("polydata::",polydata);
     
     // Rotate points
-    // console.log("JOSN-numTriangles:::",numTriangles);
-    // console.log("JOSN-pointValues:::",pointValues);
-    // console.log("JOSN-normalValues:::",normalValues);
-    // console.log("JOSN-cellValues:::",cellValues);
-    // console.log("JOSN-cellDataValues:::",cellDataValues);
+    console.log("JOSN-numTriangles:::",numTriangles);
+    console.log("JOSN-pointValues:::",pointValues);
+    console.log("JOSN-normalValues:::",normalValues);
+    console.log("JOSN-cellValues:::",cellValues);
+    console.log("JOSN-cellDataValues:::",cellDataValues);
 
     // 这样可以将数据进行导入
     // 将顶点数组全部导入，3个为一组，作为几何结构

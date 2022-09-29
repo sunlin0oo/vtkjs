@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-// import App from './view/steptest';
+// import App from './view/steptest2';
 import App from './view/Shader/polydatamapper';
 import reportWebVitals from './reportWebVitals';
 

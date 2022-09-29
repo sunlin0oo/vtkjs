@@ -1,13 +1,13 @@
 import '@kitware/vtk.js/favicon';
-import jsondata from './3M-10268-6212PC.json';
-import jsondatabeam from './beam.json';
-import jsondataTO from './TO-247AD-H.json';
+// import jsondata from './3M-10268-6212PC.json';
+// import jsondatabeam from './beam.json';
+// import jsondataTO from './TO-247AD-H.json';
 // Load the rendering pieces we want to use (for both WebGL and WebGPU)
 
 import vtkActor from '@kitware/vtk.js/Rendering/Core/Actor';
 import vtkFullScreenRenderWindow from '@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow';
 import vtkMapper from '@kitware/vtk.js/Rendering/Core/Mapper';
-import vtkSTLReader from './STLReader';
+import vtkSTLReader from '@kitware/vtk.js/IO/Geometry/STLReader';
 
 
 function App() {
