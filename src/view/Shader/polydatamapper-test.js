@@ -86,32 +86,13 @@ export default function App() {
      * NVC - NormalizedViewCoordinates
     */
 // 左右两侧的操作数格式要相同
-    //  const MyNewVertexShaderCode = '# version 300 es \n'+
-    //  '//not replace\n'+
-    //  'in vec4 vertexMC;\n'+
-    //  'out vec4 vertexVCVSOutput;uniform float pointSize;\n'+
-    //  'in vec3 normalMC;\n'+
-    //  'uniform mat3 normalMatrix;\n'+
-    //  'out vec3 normalVCVSOutput;\n'+
-    //  'in vec4 scalarColor;\n'+
-    //  'out vec4 vertexColorVSOutput;\n'+
-    //  'uniform mat4 MCPCMatrix;\n'+
-    //  'uniform mat4 MCVCMatrix;\n'+
-    //  'void main(){\n'+
-    //  'vertexColorVSOutput = scalarColor;\n'+
-    //  'normalVCVSOutput = normalMatrix * normalMC;\n'+
-    //   'vertexVCVSOutput = MCVCMatrix * vertexMC;\n'+
-    //   'gl_Position = MCPCMatrix * vertexMC * 2.0;\n'+
-    //   'gl_PointSize = pointSize;\n'+
-    //  '}'
-    
     const MyNewVertexShaderCode = '# version 300 es \n'+
     'in vec3 vertexMC;\n'+ // 位置变量的属性位置值为0
     'out vec4 vertexColor;\n'+ // 为片段着色器指定一个颜色输出
     'void main()\n'+
     '{\n'+
         'gl_Position = vec4(vertexMC, 1.0);\n'+ // 注意我们如何把一个vec3作为vec4的构造器的参数
-        'vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n'+ // 把输出变量设置为暗红色
+        'vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n'+ // 把输出变量设置为暗红色==>设置顶点颜色
     '}\n'
     //  通过此代码可以直接对着色器进行编写
     mapperViewProp.OpenGL.VertexShaderCode = MyNewVertexShaderCode;
@@ -126,6 +107,56 @@ export default function App() {
     '}'
     mapperViewProp.OpenGL.FragmentShaderCode = MyNewFragmentShaderCode;
 
+
+    // 如果要进行替换 则对其对应的标签及内容进行处理
+    //     readerObj.setUrl(
+    //   `${INPUT_PATH}`
+    // )
+    // readerStl.setUrl(
+    //     `${INPUT_PATH}`
+    //   )
+    // mapperViewProp.addShaderReplacements(
+    //   'Vertex',
+    //   '//not replace',
+    //   true,
+    //   '//replace\n varying vec3 myNormalMCVSOutput;\n',
+    //   false
+    // )
+    // mapperViewProp.addShaderReplacements(
+    //     'Vertex',
+    //     '//VTK::Normal::Dec', //declaration any uniforms/varying needed for normals   声明法线所需要的uniforms/varying==>定义用这个
+    //     true,
+    //     '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',  // 标准模型坐标
+    //     false
+    // );
+
+    // mapperViewProp.addShaderReplacements(
+    //     'Vertex',
+    //     '//VTK::Normal::Impl',// Implementation of shader code for handling normals  用于处理法线着色器的实现==>调用变量用这个
+    //     true,
+    //     '//VTK::Normal::Impl\n  myNormalMCVSOutput = normalMC;\n',
+    //     false
+    // );
+
+    // //顶点着色器将myNormalMCVSOutput ==> 片元着色器
+
+    // // All fragment shaders should name their inputs with a postfix of VSOutput.
+    // mapperViewProp.addShaderReplacements(
+    //     'Fragment',
+    //     '//VTK::Normal::Dec',
+    //     true,
+    //     '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',
+    //     false
+    // );
+
+    // mapperViewProp.addShaderReplacements(
+    //     'Fragment',
+    //     '//VTK::Normal::Impl',
+    //     true,
+    //     '//VTK::Normal::Impl\n  diffuseColor = abs(myNormalMCVSOutput) / diffuse;\n',
+    //     false
+    // );
+    // console.log('mapperViewProp.OpenGL.VertexShaderCode', mapperViewProp.OpenGL.VertexShaderCode);
     renderer.addActor(actor);
     resetCamera();
     render();

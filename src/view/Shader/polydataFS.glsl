@@ -1,5 +1,17 @@
-vtkPolyDataFS.glsl
-//VTK::System::Dec
+#version 300 es
+#define attribute in
+#define textureCube texture
+#define texture2D texture
+#define textureCubeLod textureLod
+#define texture2DLod textureLod
+
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+precision highp int;
+#else
+precision mediump float;
+precision mediump int;
+#endif
 
 /*=========================================================================
 
@@ -20,13 +32,21 @@ vtkPolyDataFS.glsl
 uniform int PrimitiveIDOffset;
 
 // VC position of this fragment
-//VTK::PositionVC::Dec
+in vec4 vertexVCVSOutput;
 
 // optional color passed in from the vertex shader, vertexColor
-//VTK::Color::Dec
+uniform float ambient;
+uniform float diffuse;
+uniform float specular;
+uniform float opacityUniform; // the fragment opacity
+uniform vec3 ambientColorUniform;
+uniform vec3 diffuseColorUniform;
+uniform vec3 specularColorUniform;
+uniform float specularPowerUniform;
 
 // optional surface normal declaration
-//VTK::Normal::Dec
+in vec3 normalVCVSOutput;
+  in vec3 myNormalMCVSOutput;
 
 // extra lighting parameters
 //VTK::Light::Dec
@@ -44,7 +64,7 @@ uniform int PrimitiveIDOffset;
 //VTK::Clip::Dec
 
 // the output of this shader
-//VTK::Output::Dec
+layout(location = 0) out vec4 fragOutput0;
 
 // Apple Bug
 //VTK::PrimID::Dec
@@ -57,7 +77,7 @@ uniform int PrimitiveIDOffset;
 void main()
 {
   // VC position of this fragment. This should not branch/return/discard.
-  //VTK::PositionVC::Impl
+  vec4 vertexVC = vertexVCVSOutput;
 
   // Place any calls that require uniform flow (e.g. dFdx) here.
   //VTK::UniformFlow::Impl
@@ -73,16 +93,33 @@ void main()
 
   //VTK::Clip::Impl
 
-  //VTK::Color::Impl
+  vec3 ambientColor;
+  vec3 diffuseColor;
+  float opacity;
+  vec3 specularColor;
+  float specularPower;
+  ambientColor = ambientColorUniform;
+  diffuseColor = diffuseColorUniform;
+  opacity = opacityUniform;
+  specularColor = specularColorUniform;
+  specularPower = specularPowerUniform;
 
   // Generate the normal if we are not passed in one
-  //VTK::Normal::Impl
+  vec3 normalVCVSOutput = normalize(normalVCVSOutput);
+  if (gl_FrontFacing == false) { normalVCVSOutput = -normalVCVSOutput; }
+  diff useColor = abs(myNormalMCVSOutput) / diffuse;
+
 
   //VTK::TCoord::Impl
 
+    float df = max(0.0, normalVCVSOutput.z);
+  float sf = pow(df, specularPower);
+  vec3 diffuseL = df * diffuseColor;
+  vec3 specularL = sf * specularColor;
+  fragOutput0 = vec4(ambientColor * ambient + diffuseL * diffuse + specularL * specular, opacity);
   //VTK::Light::Impl
 
-  if (gl_FragData[0].a <= 0.0)
+  if (fragOutput0.a <= 0.0)
     {
     discard;
     }

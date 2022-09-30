@@ -1,5 +1,17 @@
-vtkPolyDataVS.glsl
-//VTK::System::Dec
+#version 300 es
+#define attribute in
+#define textureCube texture
+#define texture2D texture
+#define textureCubeLod textureLod
+#define texture2DLod textureLod
+
+#ifdef GL_FRAGMENT_PRECISION_HIGH
+precision highp float;
+precision highp int;
+#else
+precision mediump float;
+precision mediump int;
+#endif
 
 /*=========================================================================
 
@@ -17,12 +29,17 @@ vtkPolyDataVS.glsl
 =========================================================================*/
 
 attribute vec4 vertexMC;
-// 模型文件中的顶点值
+// 模型中顶点位置
 // frag position in VC
-//VTK::PositionVC::Dec
+out vec4 vertexVCVSOutput;
+uniform float pointSize;
 
 // optional normal declaration
-//VTK::Normal::Dec
+attribute vec3 normalMC;
+uniform mat3 normalMatrix;
+out vec3 normalVCVSOutput;
+  out vec3 myNor malMCVSOutput;
+
 
 // extra lighting parameters
 //VTK::Light::Dec
@@ -37,7 +54,8 @@ attribute vec4 vertexMC;
 //VTK::Clip::Dec
 
 // camera and actor matrix values
-//VTK::Camera::Dec
+uniform mat4 MCPCMatrix;
+uniform mat4 MCVCMatrix;
 
 // Apple Bug
 //VTK::PrimID::Dec
@@ -49,7 +67,9 @@ void main()
 {
   //VTK::Color::Impl
 
-  //VTK::Normal::Impl
+  normalVCVSOutput = normalMatrix * normalMC;
+  myNormalMCVSOutput = normalMC;
+
 
   //VTK::TCoord::Impl
 
@@ -57,7 +77,9 @@ void main()
 
   //VTK::PrimID::Impl
 
-  //VTK::PositionVC::Impl
+  vertexVCVSOutput = MCVCMatrix * vertexMC;
+  gl_Position = MCPCMatrix * vertexMC;
+  gl_PointSize = pointSize;
 
   //VTK::Light::Impl
 
