@@ -17,17 +17,18 @@ import vtkOBJReader from '@kitware/vtk.js/IO/Misc/OBJReader';
 import vtkSTLReader from '@kitware/vtk.js/IO/Geometry/STLReader';
 import INPUT_PATH from '../model/space-shuttle-orbiter/space-shuttle-orbiter.obj'
 import jsonData from '../JSON/3M-10268-6212PC.json';
+import vtkShaderProgram from '@kitware/vtk.js/Rendering/OpenGL/ShaderProgram.js';
 // import INPUT_PATH from '../model/3M-10268-6212PC.stl'
 // import { render } from '@testing-library/react';
 export default function App() {
 
-     //渲染没有问题
-    //Standard rendering code setup
-    const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance();
-    const renderer = fullScreenRenderer.getRenderer();
-    const renderWindow = fullScreenRenderer.getRenderWindow();
-    const resetCamera = renderer.resetCamera;
-    const render = renderWindow.render;
+  //渲染没有问题
+  //Standard rendering code setup
+  const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance();
+  const renderer = fullScreenRenderer.getRenderer();
+  const renderWindow = fullScreenRenderer.getRenderWindow();
+  const resetCamera = renderer.resetCamera;
+  const render = renderWindow.render;
 
 
 // ----------------------------------------------------------------------------
@@ -37,16 +38,24 @@ export default function App() {
     const readerStl =  vtkSTLReader.newInstance({ splitMode: 'usemtl' });
     const readerObj =  vtkOBJReader.newInstance({ splitMode: 'usemtl' });
     const mapper = vtkMapper.newInstance();
+    const ShaderProgram = vtkShaderProgram.newInstance();
     console.log('mapper::', mapper);
     const openGLPolyDataMapper = vtkOpenGLPolyDataMapper.newInstance();
     console.log('openGLPolyDataMapper::',openGLPolyDataMapper)
     // mapper.setInputConnection(readerStl.getOutputPort());
     // mapper.setInputConnection(readerObj.getOutputPort());
     mapper.setInputData(jsonPolydata); 
-    //  initialize
+    //  Here how to initialize viewSpecificProperties to be usable in PolyDataMapper.
     const mapperViewProp = mapper.getViewSpecificProperties();
-    console.log('mapperViewProp::', mapperViewProp);
-
+    mapperViewProp.ShaderCallbacks = [];
+    mapperViewProp.ShaderCallbacks.push({
+      userdata:'',
+      callback:function(userdata,cellBO,ren,actor){
+          const program = cellBO.getProgram();
+          program.setUniformi();
+      }
+    })
+    
     mapperViewProp.OpenGL = {
       ShaderReplacements: [],
     };
@@ -67,7 +76,10 @@ export default function App() {
         replaceAll: _replaceAll,
       });
     };
+    console.log('mapperViewProp::', mapperViewProp);
 
+
+    // Actor处理部分
     const actor = vtkActor.newInstance();
     actor.setMapper(mapper);
     // actor.getProperty().setAmbientColor(0.2, 0.2, 1.0);
@@ -86,77 +98,84 @@ export default function App() {
      * NVC - NormalizedViewCoordinates
     */
 // 左右两侧的操作数格式要相同
-    const MyNewVertexShaderCode = '# version 300 es \n'+
-    'in vec3 vertexMC;\n'+ // 位置变量的属性位置值为0
-    'out vec4 vertexColor;\n'+ // 为片段着色器指定一个颜色输出
-    'void main()\n'+
-    '{\n'+
-        'gl_Position = vec4(vertexMC, 1.0);\n'+ // 注意我们如何把一个vec3作为vec4的构造器的参数
-        'vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n'+ // 把输出变量设置为暗红色==>设置顶点颜色
-    '}\n'
-    //  通过此代码可以直接对着色器进行编写
-    mapperViewProp.OpenGL.VertexShaderCode = MyNewVertexShaderCode;
-    const MyNewFragmentShaderCode = '# version 300 es \n'+
-    // 需要声明片元着色器的精度
-    'precision lowp float;\n'+
-    'out vec4 FragColor;\n'+
-    'in vec4 vertexColor;\n'+ // 从顶点着色器传来的输入变量（名称相同、类型相同）
-    'void main()\n'+
-    '{\n'+
-        'FragColor = vertexColor;\n'+
-    '}'
-    mapperViewProp.OpenGL.FragmentShaderCode = MyNewFragmentShaderCode;
+    // const MyNewVertexShaderCode = 
+    // '# version 300 es \n'+
+    // 'in vec3 vertexMC;\n'+ // 位置变量的属性位置值为0
+    // 'out vec4 vertexColor;\n'+ // 为片段着色器指定一个颜色输出
+    // 'void main()\n'+
+    // '{\n'+
+    //     'gl_Position = vec4(vertexMC, 1.0);\n'+ // 注意我们如何把一个vec3作为vec4的构造器的参数
+    //     'vertexColor = vec4(0.5, 0.0, 0.0, 1.0);\n'+ // 把输出变量设置为暗红色==>设置顶点颜色
+    // '}\n'
+    // //  通过此代码可以直接对着色器进行编写
+    // mapperViewProp.OpenGL.VertexShaderCode = MyNewVertexShaderCode;
+    // const MyNewFragmentShaderCode = 
+    // '# version 300 es \n'+
+    // // 需要声明片元着色器的精度
+    // 'precision lowp float;\n'+
+    // 'out vec4 FragColor;\n'+
+    // 'in vec4 vertexColor;\n'+ // 从顶点着色器传来的输入变量（名称相同、类型相同）
+    // 'void main()\n'+
+    // '{\n'+
+    //     'FragColor = vertexColor;\n'+
+    // '}'
+    // mapperViewProp.OpenGL.FragmentShaderCode = MyNewFragmentShaderCode;
 
+    /**所有顶点着色器都应使用 VSOutput 后​​缀命名其输出 
+     * 所有几何着色器应使用 GSOutput 后​​缀命名其输出
+     * 所有片段着色器应使用 VSOutput 后​​缀命名其输入。
+     * 换句话说，片段着色器应该假设它们的输入来自顶点着色器。 */
 
     // 如果要进行替换 则对其对应的标签及内容进行处理
-    //     readerObj.setUrl(
-    //   `${INPUT_PATH}`
-    // )
-    // readerStl.setUrl(
-    //     `${INPUT_PATH}`
-    //   )
-    // mapperViewProp.addShaderReplacements(
-    //   'Vertex',
-    //   '//not replace',
-    //   true,
-    //   '//replace\n varying vec3 myNormalMCVSOutput;\n',
-    //   false
-    // )
-    // mapperViewProp.addShaderReplacements(
-    //     'Vertex',
-    //     '//VTK::Normal::Dec', //declaration any uniforms/varying needed for normals   声明法线所需要的uniforms/varying==>定义用这个
-    //     true,
-    //     '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',  // 标准模型坐标
-    //     false
-    // );
+        readerObj.setUrl(
+      `${INPUT_PATH}`
+    )
+    readerStl.setUrl(
+        `${INPUT_PATH}`
+      )
+    mapperViewProp.addShaderReplacements(
+      'Vertex',//要替换的着色器
+      '//not replace',//要替换的代码块
+      true,
+      '//replace\n varying vec3 myNormalMCVSOutput;\n',//替换后的代码块
+      false
+    )
+    mapperViewProp.addShaderReplacements(
+        'Vertex',
+        '//VTK::Normal::Dec', //declaration any uniforms/varying needed for normals   声明法线所需要的uniforms/varying==>定义用这个
+        true,
+        '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',  // 标准模型坐标
+        false
+    );
 
-    // mapperViewProp.addShaderReplacements(
-    //     'Vertex',
-    //     '//VTK::Normal::Impl',// Implementation of shader code for handling normals  用于处理法线着色器的实现==>调用变量用这个
-    //     true,
-    //     '//VTK::Normal::Impl\n  myNormalMCVSOutput = normalMC;\n',
-    //     false
-    // );
+    mapperViewProp.addShaderReplacements(
+        'Vertex',
+        '//VTK::Normal::Impl',// Implementation of shader code for handling normals  用于处理法线着色器的实现==>调用变量用这个
+        true,
+        '//VTK::Normal::Impl\n  myNormalMCVSOutput = normalMC;\n',
+        false
+    );
 
-    // //顶点着色器将myNormalMCVSOutput ==> 片元着色器
+    //顶点着色器将myNormalMCVSOutput ==> 片元着色器
 
-    // // All fragment shaders should name their inputs with a postfix of VSOutput.
-    // mapperViewProp.addShaderReplacements(
-    //     'Fragment',
-    //     '//VTK::Normal::Dec',
-    //     true,
-    //     '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',
-    //     false
-    // );
+    // All fragment shaders should name their inputs with a postfix of VSOutput.
+    mapperViewProp.addShaderReplacements(
+        'Fragment',
+        '//VTK::Normal::Dec',
+        true,
+        '//VTK::Normal::Dec\n  varying vec3 myNormalMCVSOutput;\n',
+        false
+    );
 
-    // mapperViewProp.addShaderReplacements(
-    //     'Fragment',
-    //     '//VTK::Normal::Impl',
-    //     true,
-    //     '//VTK::Normal::Impl\n  diffuseColor = abs(myNormalMCVSOutput) / diffuse;\n',
-    //     false
-    // );
+    mapperViewProp.addShaderReplacements(
+        'Fragment',
+        '//VTK::Normal::Impl',
+        true,
+        '//VTK::Normal::Impl\n  diffuseColor = abs(myNormalMCVSOutput) / diffuse;\n',
+        false
+    );
     // console.log('mapperViewProp.OpenGL.VertexShaderCode', mapperViewProp.OpenGL.VertexShaderCode);
+    
     renderer.addActor(actor);
     resetCamera();
     render();
@@ -174,6 +193,7 @@ function getNormal(x1, y1, z1, x2, y2, z2, x3, y3, z3) {
   
   // 获取Polydata数据
 function BuildPolydata(jsondata) {
+  console.log(jsonData)
 if (!jsondata) {
     return;
     } 
@@ -244,7 +264,7 @@ if (!jsondata) {
     }
     last_vertex_coord += jsondata.face_list[faceIdx].vertex_coord.length/3;
     }
-    console.log("polydata::",polydata);
+    // console.log("polydata::",polydata);
     
     // Rotate points
     // console.log("JOSN-numTriangles:::",numTriangles);

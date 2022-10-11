@@ -46,7 +46,7 @@ uniform float specularPowerUniform;
 
 // optional surface normal declaration
 in vec3 normalVCVSOutput;
-  in vec3 myNormalMCVSOutput;
+in vec3 myNormalMCVSOutput;
 
 // extra lighting parameters
 //VTK::Light::Dec
@@ -112,7 +112,7 @@ void main()
 
   //VTK::TCoord::Impl
 
-    float df = max(0.0, normalVCVSOutput.z);
+  float df = max(0.0, normalVCVSOutput.z);
   float sf = pow(df, specularPower);
   vec3 diffuseL = df * diffuseColor;
   vec3 specularL = sf * specularColor;

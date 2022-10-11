@@ -26,6 +26,13 @@ precision mediump int;
      the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
      PURPOSE.  See the above copyright notice for more information.
 
+
+  * MC  - Model Coordinates==>本地坐标
+  * WC  - WC World Coordinates==>世界坐标
+  * VC  - View Coordinates==>观察者坐标
+  * DC  - Display Coordinates==>展示坐标
+  * NVC - NormalizedViewCoordinates
+
 =========================================================================*/
 
 attribute vec4 vertexMC;
@@ -38,8 +45,7 @@ uniform float pointSize;
 attribute vec3 normalMC;
 uniform mat3 normalMatrix;
 out vec3 normalVCVSOutput;
-  out vec3 myNor malMCVSOutput;
-
+out vec3 myNormalMCVSOutput;
 
 // extra lighting parameters
 //VTK::Light::Dec
@@ -54,8 +60,8 @@ out vec3 normalVCVSOutput;
 //VTK::Clip::Dec
 
 // camera and actor matrix values
-uniform mat4 MCPCMatrix;
-uniform mat4 MCVCMatrix;
+uniform mat4 MCDCMatrix;
+uniform mat4 MCVCMatrix;//MCDCMatrix means ModelCoordinates to View Coordinates matrix. === gl_ModelViewMatrix 
 
 // Apple Bug
 //VTK::PrimID::Dec

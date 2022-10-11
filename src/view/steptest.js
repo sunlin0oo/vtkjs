@@ -101,7 +101,7 @@ export default function App() {
       last_vertex_coord += jsondata.face_list[faceIdx].vertex_coord.length/3;
     }
     console.log("polydata::",polydata);
-    
+    console.log('json',jsondata)
     // Rotate points
     console.log("JOSN-numTriangles:::",numTriangles);
     console.log("JOSN-pointValues:::",pointValues);
@@ -113,8 +113,8 @@ export default function App() {
     // 将顶点数组全部导入，3个为一组，作为几何结构
     polydata.getPoints().setData(pointValues, 3);
     //将Cell输入导入到CellArray中作为拓扑结构
-    polydata.getPolys().setData(cellValues);
-    // polydata.getLines().setData(cellValues);
+    // polydata.getPolys().setData(cellValues);
+    polydata.getLines().setData(cellValues);
     // polydata.getVerts().setData(cellValues);
 
     polydata.getCellData().setNormals(vtkDataArray.newInstance({
@@ -614,11 +614,13 @@ export default function App() {
 
     // 这样设置才会与lookuptable进行相互的关联
     const preset = vtkColorMaps.getPresetByName('Turbo');
-    console.log(preset);
+    console.log('preset.RGBPoints', preset.RGBPoints);
     //载入每个顶点的标量值--设置点集标量
     polydata.getPointData().setScalars(vtkDataArray.newInstance({
       name: 'Attribute',
       values: [...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
+        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
+        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
       ]
@@ -637,7 +639,6 @@ export default function App() {
 
 
     // 创建角色
-    
     const actor = vtkActor.newInstance();
     // 颜色查找表
     var lookupTable = vtkColorTransferFunction.newInstance();
