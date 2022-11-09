@@ -133,13 +133,13 @@ export default function App() {
     console.log('preset.RGBPoints', preset.RGBPoints);
     //载入每个顶点的标量值--设置点集标量
     polydata.getPointData().setScalars(vtkDataArray.newInstance({
-      name: 'Attribute',
-      values: [...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
+      name: 'displacement_X',
+      values: new Float32Array([...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
         ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-      ]
+      ])
     }));
 
     // console.log('polydata.GetNumberOfPoints()', polydata.getNumberOfPoints());//获取到polydata中点的数据
@@ -174,7 +174,7 @@ export default function App() {
     // 创建映射器
     // const mapper = vtkMapper.newInstance();
     const mapper = vtkMapper.newInstance({
-      interpolateScalarsBeforeMapping: false,
+      interpolateScalarsBeforeMapping: true,
       useLookupTableScalarRange: true,
       lookupTable,
       scalarVisibility: false,
@@ -194,7 +194,7 @@ export default function App() {
       // scalarMode: ScalarMode.USE_POINT_FIELD_DATA, // 利用点属性数据中的数据数组。而不是点标量数据和单元标量数据
       // scalarMode: ScalarMode.USE_CELL_FIELD_DATA, //利用单元属性数据中得场数据。而不是点或者单元标量数据
       // scalarMode: ScalarMode.USE_POINT_DUSE_FIELD_DATAATA,
-      scalarVisibility: true,//设置是否进行标量渲染
+      scalarVisibility: false,//设置是否进行标量渲染
     });
 
     //设置颜色表中的颜色
@@ -218,13 +218,14 @@ export default function App() {
     //高光强度
     // actor.getProperty().setSpecularPower(10);
     // 是否显示线段
-    actor.getProperty().setEdgeVisibility(true);
+    actor.getProperty().setEdgeVisibility(false);
+    console.log('actor.getProperty()', actor.getProperty());
     // 渲染模式
     actor.getProperty().setRepresentation(1);
     // 表面线框模式才能进行设置边框颜色
     // actor.getProperty().setColor([0, 0, 0]);
     // 线段颜色
-    // actor.getProperty().setEdgeColor([1,1,1]);
+    actor.getProperty().setEdgeColor([1,1,1]);
     // 不透明度
     actor.getProperty().setOpacity(1);
     // 线段宽度
