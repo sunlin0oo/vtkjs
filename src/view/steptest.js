@@ -1,6 +1,6 @@
 // import React from 'react'
 import '@kitware/vtk.js/favicon';
-import jsondata from './JSON/3M-10268-6212PC.json';
+import jsondata from './JSON/beam.json';
 import '@kitware/vtk.js/Rendering/Profiles/Geometry';
 import vtkActor from '@kitware/vtk.js/Rendering/Core/Actor';
 import vtkFullScreenRenderWindow from '@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow';
@@ -105,14 +105,14 @@ export default function App() {
       // 为了记录之前面所有顶点的长度==>为了能够使cellValues与pointValues匹配
       last_vertex_coord += jsondata.face_list[faceIdx].vertex_coord.length/3;
     }
-    console.log("polydata::",polydata);
-    console.log('json',jsondata)
+    // console.log("polydata::",polydata);
+    // console.log('json',jsondata)
     // Rotate points
-    console.log("JOSN-numTriangles:::",numTriangles);
-    console.log("JOSN-pointValues:::",pointValues);
-    console.log("JOSN-normalValues:::",normalValues);
-    console.log("JOSN-cellValues:::",cellValues);
-    console.log("JOSN-cellDataValues:::",cellDataValues);
+    // console.log("JOSN-numTriangles:::",numTriangles);
+    // console.log("JOSN-pointValues:::",pointValues);
+    // console.log("JOSN-normalValues:::",normalValues);
+    // console.log("JOSN-cellValues:::",cellValues);
+    // console.log("JOSN-cellDataValues:::",cellDataValues);
 
     // 这样可以将数据进行导入
     // 将顶点数组全部导入，3个为一组，作为几何结构
@@ -122,26 +122,25 @@ export default function App() {
     // polydata.getLines().setData(cellValues);
     // polydata.getVerts().setData(cellValues);
 
-    polydata.getCellData().setNormals(vtkDataArray.newInstance({
-      name: 'Normals',
-      values: normalValues,
-      numberOfComponents: 3
-    })); // Add new output
-
+    // polydata.getCellData().setNormals(vtkDataArray.newInstance({
+    //   name: 'Normals',
+    //   values: normalValues,
+    //   numberOfComponents: 3
+    // })); // Add new output
     // 这样设置才会与lookuptable进行相互的关联
-    const preset = vtkColorMaps.getPresetByName('Turbo');
-    console.log('preset.RGBPoints', preset.RGBPoints);
+    // const preset = vtkColorMaps.getPresetByName('Turbo');
+    // console.log('preset.RGBPoints', preset.RGBPoints); // 80
     //载入每个顶点的标量值--设置点集标量
-    polydata.getPointData().setScalars(vtkDataArray.newInstance({
-      name: 'displacement_X',
-      values: new Float32Array([...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-        ...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
-      ])
-    }));
-
+    // polydata.getPointData().setScalars(vtkDataArray.newInstance({
+    //   name: 'displacement_X',
+    //   values: new Float32Array([...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,...preset.RGBPoints,
+    //   ])
+    // }));
+    // polydata.getCellData().setScalars(vtkDataArray.newInstance({
+    //   name: 'displacement_X',
+    //   values: new Float32Array([1])
+    // }));
+    // console.log('polydata.getCellData()', polydata.getCellData().get().arrays[0].data.get()); // 80
     // console.log('polydata.GetNumberOfPoints()', polydata.getNumberOfPoints());//获取到polydata中点的数据
     // // 区域数据中的数组的数目
     // let newAarry =polydata.getPointData().getNumberOfArrays();// 获取到polydata中点集数据
@@ -153,16 +152,16 @@ export default function App() {
     // // 数据的范围 
     // console.log('getRange', polydata.getPointData().getArray(0).getRange());
 
-    const normalName = polydata.getPointData().getArrays()[0].getName();
-    console.log(normalName);
+    // const normalName = polydata.getPointData().getArrays()[0].getName();
+    // console.log(normalName);
     // 这样获取到的是Normals
-    console.log(
-      'polydata.getPointData().getArrayByName',
-      polydata.getPointData().getArrayByName(normalName),
-      polydata.getPointData().getScalars().getData()
-    ); // 获取顶点
+    // console.log(
+    //   'polydata.getPointData().getArrayByName',
+    //   polydata.getPointData().getArrayByName(normalName),
+    //   polydata.getPointData().getScalars().getData()
+    // ); // 获取顶点
 
-
+      // console.log('polydata.toJSON()', polydata.toJSON())
     // const dataSetAttributes = vtkDataSetAttributes.newInstance()
     // dataSetAttributes.getNumberOfArrays();
 
@@ -174,54 +173,55 @@ export default function App() {
     // 创建映射器
     // const mapper = vtkMapper.newInstance();
     const mapper = vtkMapper.newInstance({
-      interpolateScalarsBeforeMapping: true,
-      useLookupTableScalarRange: true,
+      // interpolateScalarsBeforeMapping: true,
+      // useLookupTableScalarRange: true,
       lookupTable,
-      scalarVisibility: false,
+      scalarVisibility: true,
     });
       // Mapper==>存放数据和渲染信息==>将输入数据转换为几何图元进行渲染
     // 映射连接计算器
     mapper.setInputData(polydata); 
     actor.setMapper(mapper);
-    mapper.set({
-      colorByArrayName: "displacement_X",
-      interpolateScalarsBeforeMapping: true,
-      colorMode: ColorMode.MAP_SCALARS,
-      // colorMode: 1,
-      // scalarMode: 1,// 总是使用点标量属性数据进行映射的
-      scalarMode: ScalarMode.USE_POINT_DATA,// 总是使用点标量属性数据进行映射的
-      // scalarMode: ScalarMode.USE_CELL_DATA,// 总是使用单元标量属性数据进行映射的
-      // scalarMode: ScalarMode.USE_POINT_FIELD_DATA, // 利用点属性数据中的数据数组。而不是点标量数据和单元标量数据
-      // scalarMode: ScalarMode.USE_CELL_FIELD_DATA, //利用单元属性数据中得场数据。而不是点或者单元标量数据
-      // scalarMode: ScalarMode.USE_POINT_DUSE_FIELD_DATAATA,
-      scalarVisibility: false,//设置是否进行标量渲染
-    });
+    // mapper.set({
+    //   colorByArrayName: "displacement_X",
+    //   interpolateScalarsBeforeMapping: true,
+    //   colorMode: ColorMode.MAP_SCALARS,
+    //   // colorMode: 1,
+    //   // scalarMode: 1,// 总是使用点标量属性数据进行映射的
+    //   // scalarMode: ScalarMode.USE_POINT_DATA,// 总是使用点标量属性数据进行映射的
+    //   scalarMode: ScalarMode.USE_CELL_DATA,// 总是使用单元标量属性数据进行映射的
+    //   // scalarMode: ScalarMode.USE_POINT_FIELD_DATA, // 利用点属性数据中的数据数组。而不是点标量数据和单元标量数据
+    //   // scalarMode: ScalarMode.USE_CELL_FIELD_DATA, //利用单元属性数据中得场数据。而不是点或者单元标量数据
+    //   // scalarMode: ScalarMode.USE_POINT_DUSE_FIELD_DATAATA,
+    //   scalarVisibility: true,//设置是否进行标量渲染
+    // });
 
     //设置颜色表中的颜色
     // const preset = vtkColorMaps.getPresetByName(presetelector.value);
-    lookupTable.applyColorMap(preset);
+    // lookupTable.applyColorMap(vtkColorMaps.getPresetByName('Turbo'));
     // 颜色映射的范围值
-    lookupTable.setMappingRange(-0.2,3);
+    // lookupTable.setMappingRange(-0.2,3);
     // 更新颜色映射的范围值
-    lookupTable.updateRange();
+    // lookupTable.updateRange();
 
     // // 改变面片颜色
     // lookupTable.set
     // lookupTable.setMappingRange(0.67, 0.0);   
-    // lookupTable.addRGBPoint(0, 1.0, 1.50, 1.0); //red
+    // lookupTable.addRGBPoint(0, 1.0, 1.0, 1.0); //red
     // mapper.setLookupTable(lookup);
+
     // console.log("actor.getProperty().set()", actor.getProperty())
     // 环境光系数
-    // actor.getProperty().setAmbient(1);
+    actor.getProperty().setAmbient(0.4);
     // 漫反射
-    // actor.getProperty().setDiffuse(1.5);
+    actor.getProperty().setDiffuse(0.6);
     //高光强度
-    // actor.getProperty().setSpecularPower(10);
+    actor.getProperty().setSpecularPower(0);
     // 是否显示线段
     actor.getProperty().setEdgeVisibility(false);
     console.log('actor.getProperty()', actor.getProperty());
     // 渲染模式
-    actor.getProperty().setRepresentation(1);
+    actor.getProperty().setRepresentation(2);
     // 表面线框模式才能进行设置边框颜色
     // actor.getProperty().setColor([0, 0, 0]);
     // 线段颜色
@@ -233,6 +233,8 @@ export default function App() {
     // 角色中加入映射
     // actor.setMapper(mapper);
     renderer.addActor(actor);
+    renderer.setBackground(0.8, 0.8, 0.8);
+
     resetCamera();
     render();
 
