@@ -12,6 +12,13 @@ import jsonData from './JSON/e06c81db-f405-4457-8ae8-0027bdf934e2_Beam.json'
 import slice1 from './JSON/beam-1.json'
 import slice2 from './JSON/beam-2.json'
 // import vtkSphereSource from 'vtk.js/Sources/Filters/Sources/SphereSource';
+
+type BuildData = {
+    pointValues?: Float32Array;
+    cellValues?: Uint32Array;
+  };
+  
+
 export default function App() {
     //渲染没有问题
     //Standard rendering code setup
@@ -21,8 +28,10 @@ export default function App() {
     const resetCamera = renderer.resetCamera;
     const render = renderWindow.render;
     console.log('slice1', slice1, 'slice2', slice2);
+    // const BuildData = BuildPolyData(jsonData);
+    // const pointValues:Float32Array | undefined = BuildData?.pointValues;
+    // const cellValues:Uint32Array | undefined = BuildData?.cellValues;
     const { pointValues, cellValues } = BuildPolyData(jsonData);
-
     const polydata = vtkPolyData.newInstance();
     // 这样可以将数据进行导入
     // 将顶点数组全部导入，3个为一组，作为几何结构
