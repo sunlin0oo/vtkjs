@@ -67,13 +67,18 @@ const CountSolidNumber = (solidLen, solid) => {
   return solidOfFace;
 };
 
-export function BuildPolyData(jsonData) {
+export function   BuildPolyData(jsonData) {
   // 判断jsonData是否存在
   if (!jsonData) {
     return null;
   }
-  // 兼容旧数据，查看jsonData中关键字段是否存在
+  console.log('jsonData前', jsonData);
+  /**
+   * 兼容旧数据，查看jsonData中关键字段allFaceVertex是否存在
+   * ==>大版本更新字段:allFaceVertex, solidOfFace
+   */
   if (!jsonData.allFaceVertex) {
+    console.log('进行了旧数据兼容')
     let edgeList;
     let faceList;
     // 用于记录不重复的模型顶点
@@ -81,7 +86,7 @@ export function BuildPolyData(jsonData) {
     let solidOfFace = [];
     // 旧数据中面的数量;
     const faceLen = jsonData.face_list.length;
-    const solidLen = jsonData.solid_list.length;
+    const solidLen = jsonData?.solid_list.length;
     // 提前将类进行定义
     const face = jsonData.face_list;
     const solid = jsonData.solid_list;
@@ -89,7 +94,7 @@ export function BuildPolyData(jsonData) {
     allFaceVertex = CountNonRepeatingVertices(faceLen, face);
     const vertexCount = allFaceVertex.length;
     solidOfFace = CountSolidNumber(solidLen, solid);
-
+    
     const newJsonData = {
       allFaceVertex,
       edgeList,
@@ -103,8 +108,8 @@ export function BuildPolyData(jsonData) {
     newJsonData.faceList = jsonData.face_list;
 
     jsonData = newJsonData;
-  }
-
+  }  
+  console.log('jsonData后', jsonData)
   // 获取模型面总数量
   const faceLength = jsonData.faceList.length;
   // 模型三角面总数量
@@ -114,9 +119,10 @@ export function BuildPolyData(jsonData) {
   jsonData.allFaceVertex.forEach((item, index) => {
     map.set(JSON.stringify(item), index);
   });
-
   // 三角网格化后坐标扁平化处理
+
   const allVertex = flatten(jsonData.allFaceVertex);
+ 
   // 设置顶点维度
   const numdimesion = allVertex.length;
   // 存储顶点维度
@@ -195,7 +201,16 @@ export function BuildPolyData(jsonData) {
     }
     lineMap.set(i, lineArray);
   }
-  const { solidOfFace, entityNames } = jsonData;
+  let solidOfFace;
+  if(jsonData.solid_list){
+    const solidLen = jsonData?.solid_list.length;
+    // 提前将类进行定义
+    const solid = jsonData.solid_list;
+    solidOfFace = CountSolidNumber(solidLen, solid);
+  } else {
+    solidOfFace = jsonData.solidOfFace;
+  }
+  const { entityNames } = jsonData;
   /**
    * Face2Coordinate: 面对应的三角坐标系==>用于框选
    * entityNames:实体名称==>实体列表的展示
