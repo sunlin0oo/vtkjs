@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './view/readSliceFile';
+import App from './view/readSliceFile.ts';
 // import App from './view/Shader/polydatamapper-test';
 import reportWebVitals from './reportWebVitals';
 

@@ -1,0 +1,15 @@
+diff --git a/node_modules/@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow.js b/node_modules/@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow.js
+index 222b920..dc9e644 100644
+--- a/node_modules/@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow.js
++++ b/node_modules/@kitware/vtk.js/Rendering/Misc/FullScreenRenderWindow.js
+@@ -69,7 +69,9 @@ function vtkFullScreenRenderWindow(publicAPI, model) {
+   } // VTK renderWindow/renderer
+ 
+ 
+-  model.renderWindow = vtkRenderWindow.newInstance();
++  model.renderWindow = vtkRenderWindow.newInstance({
++    defaultViewAPI: 'WebGL'
++  });
+   model.renderer = vtkRenderer.newInstance();
+   model.renderWindow.addRenderer(model.renderer); // apiSpecificRenderWindow
+ 

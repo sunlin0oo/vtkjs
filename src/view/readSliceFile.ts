@@ -15,20 +15,10 @@ import slice4 from './JSON/fpv-4.json'
 import slice5 from './JSON/fpv-5.json'
 import slice6 from './JSON/fpv-6.json'
 import slice7 from './JSON/fpv-7.json'
-
-
-export default function App() {
-    //渲染没有问题
-    //Standard rendering code setup
-    const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance();
-    const renderer = fullScreenRenderer.getRenderer();
-    const renderWindow = fullScreenRenderer.getRenderWindow();
-    const resetCamera = renderer.resetCamera;
-    const render = renderWindow.render;
-    console.log('slice1', slice1, 'slice2', slice2);
-
-    const buildData = BuildPolyData(slice2);
-    console.log('buildData', buildData);
+import slice8 from './JSON/fpv-8.json'
+import slice9 from './JSON/fpv-9.json'
+function addActor(source, renderer, render, resetCamera) {
+    const buildData = BuildPolyData(source);
     const polydata = vtkPolyData.newInstance();
     // 这样可以将数据进行导入
     // 将顶点数组全部导入，3个为一组，作为几何结构
@@ -44,10 +34,29 @@ export default function App() {
     actor.setMapper(mapper);
 
     renderer.addActor(actor);
-    renderer.setBackground(0.8, 0.8, 0.8);
+    // renderer.setBackground(0.8, 0.8, 0.8);
 
     resetCamera();
     render();
+}
+export default function App() {
+    //渲染没有问题
+    //Standard rendering code setup
+    const fullScreenRenderer = vtkFullScreenRenderWindow.newInstance();
+    const renderer = fullScreenRenderer.getRenderer();
+    const renderWindow = fullScreenRenderer.getRenderWindow();
+    const resetCamera = renderer.resetCamera;
+    const render = renderWindow.render;
+    // console.log('slice1', slice1, 'slice2', slice2);
+    addActor(slice1, renderer, render, resetCamera);
+    addActor(slice2, renderer, render, resetCamera);
+    addActor(slice3, renderer, render, resetCamera);
+    addActor(slice4, renderer, render, resetCamera);
+    addActor(slice5, renderer, render, resetCamera);
+    addActor(slice6, renderer, render, resetCamera);
+    addActor(slice7, renderer, render, resetCamera);
+    // addActor(slice9, renderer, render, resetCamera);
+
 
 }
 
