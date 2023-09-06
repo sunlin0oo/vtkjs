@@ -22,9 +22,16 @@ function addActor(source, renderer, render, resetCamera) {
     const polydata = vtkPolyData.newInstance();
     // 这样可以将数据进行导入
     // 将顶点数组全部导入，3个为一组，作为几何结构
-    polydata.getPoints().setData(buildData.pointValues, 3);
-    // //将Cell输入导入到CellArray中作为拓扑结构
-    polydata.getPolys().setData(buildData.cellValues);
+    //1.很自信这个对象一定存在，可以用 ! 解决
+    // polydata.getPoints().setData(buildData!.pointValues, 3);
+    // // //将Cell输入导入到CellArray中作为拓扑结构
+    // polydata.getPolys().setData(buildData!.cellValues);
+    // 2.最正确的解决方案，就是加null的判断
+    if (buildData) {
+        polydata.getPoints().setData(buildData!.pointValues, 3);
+        // //将Cell输入导入到CellArray中作为拓扑结构
+        polydata.getPolys().setData(buildData!.cellValues);
+    }
     const actor = vtkActor.newInstance();
     // 颜色查找表
     const mapper = vtkMapper.newInstance();
